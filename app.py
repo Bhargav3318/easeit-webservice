@@ -1,47 +1,70 @@
-from flask import Flask, jsonify, request
+
+from flask import Flask, render_template, request, redirect, url_for
 import json
+import boto3
+from datetime import datetime
+
+from process import process_data
 
 app = Flask(__name__)
 
-with open('menu_data.json', 'r') as file:
-    menu = json.load(file)
+def save_preference(data):
+    try:
+        
+        with open('data/travel_preferences.json', 'r') as file:
+            try:
+                preferences = json.load(file)
+            except json.JSONDecodeError:
+                preferences = []
+        
+        # Add new data
+        preferences.append({
+            'id': len(preferences) + 1,
+            'start_date': data['start_date'],
+            'end_date': data['end_date'],
+            'budget': float(data['budget']),
+            'adults': int(data['adults']),
+            'children': int(data['children']),
+            'preferences': data['preferences']
+        })
+        
+        # Save updated data
+        with open('data/travel_preferences.json', 'w') as file:
+            json.dump(preferences, file, indent=4)
+        return True
+    except Exception as e:
+        print(f"Error saving data: {e}")
+        return False
 
-@app.route('/menu', methods=['GET'])
-def get_menu():
-    return menu
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-@app.route('/menu/<day>', methods=['GET'])
-def get_menu_for_day(day):
-    day = day.capitalize()
-    return jsonify(menu.get(day, {'message': f'No menu found for {day}'}))
+@app.route('/submit', methods=['POST'])
+def submit():
+    try:
+        data = {
+            'start_date': request.form['start_date'],
+            'end_date': request.form['end_date'],
+            'budget': request.form['budget'],
+            'adults': request.form['adults'],
+            'children': request.form['children'],
+            'preferences': request.form['preferences']
+        }
+        
+        if save_preference(data):
+            plan = process_data(data)
+            return redirect(url_for('success',trip_plan=plan))
+        else:
+            return "Error saving data", 500
+    except Exception as e:
+        print(f"Error processing form: {e}")
+        return "Error processing form", 500
 
-@app.route('/menu/<day>', methods=['POST'])
-def add_menu_item_for_day(day):
-    day = day.capitalize()
-    if day in menu:
-        data = request.get_json()
-        new_item = {"category": data['category'], "item": data['item']}
-        menu[day].append(new_item)
-        save_data()
-        return jsonify(new_item), 201
-    return jsonify({'message': f'No menu found for {day}'}), 404
-
-@app.route('/menu/<day>', methods=['PUT'])
-def update_menu_item_for_day(day):
-    day = day.capitalize()
-    if day in menu:
-        data = request.get_json()
-        for item in menu[day]:
-            if item['category'] == data['category']:
-                item['item'] = data['item']
-                save_data()
-                return jsonify(item)
-        return jsonify({'message': f'Category not found for {day}'}), 404
-    return jsonify({'message': f'No menu found for {day}'}), 404
-
-def save_data():
-    with open('menu_data.json', 'w') as file:
-        json.dump(menu, file, indent=4)
+@app.route('/success')
+def success():
+    trip_plan=request.args.get('trip_plan', 'No trip plan available')
+    return render_template('success.html',trip_plan=trip_plan)
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    app.run(debug=True, port=5000)
