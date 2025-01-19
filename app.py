@@ -17,7 +17,6 @@ def save_preference(data):
             except json.JSONDecodeError:
                 preferences = []
         
-        # Add new data
         preferences.append({
             'id': len(preferences) + 1,
             'start_date': data['start_date'],
@@ -28,7 +27,6 @@ def save_preference(data):
             'preferences': data['preferences']
         })
         
-        # Save updated data
         with open('data/travel_preferences.json', 'w') as file:
             json.dump(preferences, file, indent=4)
         return True
