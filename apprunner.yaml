@@ -1,1 +1,10 @@
-
+version: 1.0
+runtime: python3 
+build:
+  commands:
+    build:
+      - pip3 install pipenv
+      - pipenv install
+      - pip3 install flask  
+run: 
+  command: python3 app.py
