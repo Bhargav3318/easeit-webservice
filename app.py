@@ -1,38 +1,8 @@
-
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import json
-import boto3
-from datetime import datetime
-
 from process import process_data
 
 app = Flask(__name__)
-
-def save_preference(data):
-    try:
-        
-        with open('data/travel_preferences.json', 'r') as file:
-            try:
-                preferences = json.load(file)
-            except json.JSONDecodeError:
-                preferences = []
-        
-        preferences.append({
-            'id': len(preferences) + 1,
-            'start_date': data['start_date'],
-            'end_date': data['end_date'],
-            'budget': float(data['budget']),
-            'adults': int(data['adults']),
-            'children': int(data['children']),
-            'preferences': data['preferences']
-        })
-        
-        with open('data/travel_preferences.json', 'w') as file:
-            json.dump(preferences, file, indent=4)
-        return True
-    except Exception as e:
-        print(f"Error saving data: {e}")
-        return False
 
 @app.route('/')
 def index():
@@ -40,43 +10,34 @@ def index():
 
 @app.route('/submit', methods=['POST'])
 def submit():
+    data = {
+        'start_date': request.form['start_date'],
+        'end_date': request.form['end_date'],
+        'budget': request.form['budget'],
+        'adults': request.form['adults'],
+        'children': request.form['children'],
+        'preferences': request.form['preferences']
+    }
+
     try:
-        data = {
-            'start_date': request.form['start_date'],
-            'end_date': request.form['end_date'],
-            'budget': request.form['budget'],
-            'adults': request.form['adults'],
-            'children': request.form['children'],
-            'preferences': request.form['preferences']
-        }
-        
-        print("Received form data:", data)
+        plan_text = process_data(data)
 
-        if save_preference(data):
-            plan = process_data(data)
-            print("Generated trip plan:", plan)
-            return redirect(url_for('success', trip_plan=json.dumps(plan)))
-        else:
-            return "Error saving data", 500
+        # Convert the structured text to dictionary
+        formatted_plan = format_trip_plan(plan_text)
+        return render_template('success.html', trip_plan=formatted_plan)
+
     except Exception as e:
-        print(f"Error processing form: {e}")
-        return "Error processing form", 500
+        return f"Error processing trip plan: {e}"
 
+def format_trip_plan(plan_text):
+    """ Function to parse and structure the travel plan text into a dictionary """
+    trip_plan = []
+    lines = plan_text.split("**")  # Splitting by '**' which indicates sections
+    for line in lines:
+        if line.strip():
+            trip_plan.append(line.strip().replace('*', ''))  # Remove extra asterisks
 
-@app.route('/success')
-def success():
-    trip_plan = request.args.get('trip_plan')
-    
-    if not trip_plan:
-        trip_plan = "No trip plan available"
-    else:
-        try:
-            trip_plan = json.loads(trip_plan)
-        except json.JSONDecodeError:
-            trip_plan = "Invalid trip plan data received."
-
-    return render_template('success.html', trip_plan=trip_plan)
-
+    return trip_plan
 
 if __name__ == '__main__':
-    app.run(debug=True,host="0.0.0.0", port=5000)
+    app.run(debug=True, host="0.0.0.0", port=5000)

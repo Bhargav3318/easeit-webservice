@@ -2,12 +2,31 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trip Plan</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        .day-plan { margin-bottom: 20px; }
+        ul { list-style-type: none; padding-left: 0; }
+        li { margin-bottom: 5px; }
+        strong { font-size: 1.2em; }
+    </style>
 </head>
 <body>
     <h1>Trip Plan</h1>
-    <p>{{ trip_plan }}</p>
-    <a href="/">Go Back</a>
+
+    <div>
+        {% for line in trip_plan %}
+            {% if line.startswith("Destination") %}
+                <h2>{{ line }}</h2>
+            {% elif line.startswith("Duration") or line.startswith("Budget") %}
+                <p><strong>{{ line }}</strong></p>
+            {% else %}
+                <p>{{ line }}</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <a href="{{ url_for('index') }}">Go Back</a>
 </body>
 </html>
