@@ -50,19 +50,33 @@ def submit():
             'preferences': request.form['preferences']
         }
         
+        print("Received form data:", data)
+
         if save_preference(data):
             plan = process_data(data)
-            return redirect(url_for('success',trip_plan=plan))
+            print("Generated trip plan:", plan)
+            return redirect(url_for('success', trip_plan=json.dumps(plan)))
         else:
             return "Error saving data", 500
     except Exception as e:
         print(f"Error processing form: {e}")
         return "Error processing form", 500
 
+
 @app.route('/success')
 def success():
-    trip_plan=request.args.get('trip_plan', 'No trip plan available')
-    return render_template('success.html',trip_plan=trip_plan)
+    trip_plan = request.args.get('trip_plan')
+    
+    if not trip_plan:
+        trip_plan = "No trip plan available"
+    else:
+        try:
+            trip_plan = json.loads(trip_plan)
+        except json.JSONDecodeError:
+            trip_plan = "Invalid trip plan data received."
+
+    return render_template('success.html', trip_plan=trip_plan)
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

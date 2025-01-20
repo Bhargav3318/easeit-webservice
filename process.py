@@ -10,27 +10,16 @@ def process_data(data):
     )
 
     payload = {
-        "anthropic_version": "bedrock-2023-05-31",
-        "max_tokens": 200,
-        "top_k": 250,
-        "stopSequences": [],
-        "temperature": 1,
-        "top_p": 0.999,
-        "messages": [
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": prompt_text
-                    }
-                ]
-            }
-        ]
+        "prompt": prompt_text,
+        "max_gen_len": 512,
+        "temperature": 0.5,
+        "top_p": 0.9
     }
 
     body = json.dumps(payload)
-    model_id = "anthropic.claude-3-5-haiku-20241022-v1:0"
+
+    model_id = "meta.llama3-1-70b-instruct-v1:0"
+    inference_profile_arn = "arn:aws:bedrock:us-east-2:980921713309:inference-profile/us.meta.llama3-1-70b-instruct-v1:0"
 
     try:
         bedrock = boto3.client(service_name="bedrock-runtime", region_name="us-east-2")
@@ -39,11 +28,13 @@ def process_data(data):
             modelId=model_id,
             contentType="application/json",
             accept="application/json",
-            body=body
+            body=body,
+            guardrailIdentifier=inference_profile_arn  # Corrected parameter name
         )
 
-        response_body = json.loads(response.get("body").read())
-        response_text = response_body.get('content', [{'text': 'No response generated'}])[0]['text']
+        response_body = json.loads(response['body'].read().decode('utf-8'))
+
+        response_text = response_body.get('generated_text', 'No response generated')
 
         return response_text
 

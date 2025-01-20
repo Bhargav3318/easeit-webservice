@@ -1,17 +1,21 @@
 {
-    "modelId": "amazon.nova-pro-v1:0",
+    "modelId": "anthropic.claude-3-5-haiku-20241022-v1:0",
     "contentType": "application/json",
     "accept": "application/json",
     "body": {
-      "inferenceConfig": {
-        "max_new_tokens": 1000
-      },
+      "anthropic_version": "bedrock-2023-05-31",
+      "max_tokens": 200,
+      "top_k": 250,
+      "stopSequences": [],
+      "temperature": 1,
+      "top_p": 0.999,
       "messages": [
         {
           "role": "user",
           "content": [
             {
-              "text": "this is where you place your input text"
+              "type": "text",
+              "text": "hello world"
             }
           ]
         }

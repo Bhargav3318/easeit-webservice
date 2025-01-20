@@ -90,5 +90,275 @@
         "adults": 1,
         "children": 1,
         "preferences": "beaches"
+    },
+    {
+        "id": 11,
+        "start_date": "2025-01-21",
+        "end_date": "2025-01-24",
+        "budget": 250.0,
+        "adults": 1,
+        "children": 1,
+        "preferences": "beachers, nature etc"
+    },
+    {
+        "id": 12,
+        "start_date": "2025-01-21",
+        "end_date": "2025-01-24",
+        "budget": 350.0,
+        "adults": 1,
+        "children": 1,
+        "preferences": "beaches,nature"
+    },
+    {
+        "id": 13,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-23",
+        "budget": 5000.0,
+        "adults": 2,
+        "children": 1,
+        "preferences": "adventures"
+    },
+    {
+        "id": 14,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-22",
+        "budget": 2000.0,
+        "adults": 3,
+        "children": 1,
+        "preferences": "i like nature and beaches"
+    },
+    {
+        "id": 15,
+        "start_date": "2025-01-21",
+        "end_date": "2025-01-23",
+        "budget": 5000.0,
+        "adults": 3,
+        "children": 1,
+        "preferences": "beaches"
+    },
+    {
+        "id": 16,
+        "start_date": "2025-01-21",
+        "end_date": "2025-01-24",
+        "budget": 3000.0,
+        "adults": 2,
+        "children": 1,
+        "preferences": "beaches"
+    },
+    {
+        "id": 17,
+        "start_date": "2025-01-23",
+        "end_date": "2025-01-31",
+        "budget": 3500.0,
+        "adults": 1,
+        "children": 1,
+        "preferences": "adventures"
+    },
+    {
+        "id": 18,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-24",
+        "budget": 3500.0,
+        "adults": 1,
+        "children": 1,
+        "preferences": "beaches"
+    },
+    {
+        "id": 19,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-24",
+        "budget": 3500.0,
+        "adults": 1,
+        "children": 1,
+        "preferences": "sun"
+    },
+    {
+        "id": 20,
+        "start_date": "2025-01-22",
+        "end_date": "2025-01-25",
+        "budget": 3500.0,
+        "adults": 2,
+        "children": 1,
+        "preferences": "beaches"
+    },
+    {
+        "id": 21,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-22",
+        "budget": 1500.0,
+        "adults": 1,
+        "children": 1,
+        "preferences": "beaches"
+    },
+    {
+        "id": 22,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-25",
+        "budget": 1500.0,
+        "adults": 1,
+        "children": 1,
+        "preferences": "sports"
+    },
+    {
+        "id": 23,
+        "start_date": "2025-01-25",
+        "end_date": "2025-01-30",
+        "budget": 5000.0,
+        "adults": 1,
+        "children": 1,
+        "preferences": "sun"
+    },
+    {
+        "id": 24,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-23",
+        "budget": 5000.0,
+        "adults": 1,
+        "children": 1,
+        "preferences": "beaches"
+    },
+    {
+        "id": 25,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-23",
+        "budget": 3520.0,
+        "adults": 1,
+        "children": 1,
+        "preferences": "beaches"
+    },
+    {
+        "id": 26,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-24",
+        "budget": 2000.0,
+        "adults": 1,
+        "children": 2,
+        "preferences": "beaches"
+    },
+    {
+        "id": 27,
+        "start_date": "2025-01-21",
+        "end_date": "2025-01-24",
+        "budget": 500.0,
+        "adults": 1,
+        "children": 0,
+        "preferences": "I like nature"
+    },
+    {
+        "id": 28,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-22",
+        "budget": 500.0,
+        "adults": 1,
+        "children": 0,
+        "preferences": "i like nature\r\n"
+    },
+    {
+        "id": 29,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-22",
+        "budget": 500.0,
+        "adults": 1,
+        "children": 0,
+        "preferences": "i like nature"
+    },
+    {
+        "id": 30,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-24",
+        "budget": 250.0,
+        "adults": 1,
+        "children": 0,
+        "preferences": "i like nature"
+    },
+    {
+        "id": 31,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-24",
+        "budget": 250.0,
+        "adults": 1,
+        "children": 0,
+        "preferences": "i like nature"
+    },
+    {
+        "id": 32,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-24",
+        "budget": 500.0,
+        "adults": 2,
+        "children": 1,
+        "preferences": "i like nature"
+    },
+    {
+        "id": 33,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-25",
+        "budget": 5000.0,
+        "adults": 4,
+        "children": 1,
+        "preferences": "i love nature\r\n"
+    },
+    {
+        "id": 34,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-23",
+        "budget": 500.0,
+        "adults": 1,
+        "children": 2,
+        "preferences": "i love nature"
+    },
+    {
+        "id": 35,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-23",
+        "budget": 5000.0,
+        "adults": 1,
+        "children": 0,
+        "preferences": "i love nature"
+    },
+    {
+        "id": 36,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-23",
+        "budget": 500.0,
+        "adults": 1,
+        "children": 0,
+        "preferences": ".."
+    },
+    {
+        "id": 37,
+        "start_date": "2025-01-24",
+        "end_date": "2025-01-31",
+        "budget": 2000.0,
+        "adults": 1,
+        "children": 0,
+        "preferences": ".."
+    },
+    {
+        "id": 38,
+        "start_date": "2025-01-22",
+        "end_date": "2025-01-24",
+        "budget": 1.0,
+        "adults": 1,
+        "children": 0,
+        "preferences": "like"
+    },
+    {
+        "id": 39,
+        "start_date": "2025-01-20",
+        "end_date": "2025-01-23",
+        "budget": 5000.0,
+        "adults": 1,
+        "children": 0,
+        "preferences": "i like sun"
+    },
+    {
+        "id": 40,
+        "start_date": "2025-01-21",
+        "end_date": "2025-01-22",
+        "budget": 250.0,
+        "adults": 1,
+        "children": 0,
+        "preferences": ".."
     }
 ]
