@@ -6,7 +6,7 @@ def process_data(data):
         f"On the dates between {data['start_date']} and {data['end_date']}, "
         f"I am planning a trip with a budget of {data['budget']} USD for {data['adults']} adults "
         f"and {data['children']} children. Some preferences for the trip are: {data['preferences']}. "
-        "Please provide a travel plan within my budget and list activities I can do during the trip."
+        "Please provide a travel plan within my budget and list activities I can do during the trip.give me in a structured way day by day and in bulletpoints every day activities and types of food etc make it a little breif"
     )
 
     payload = {
@@ -18,25 +18,24 @@ def process_data(data):
 
     body = json.dumps(payload)
 
-    model_id = "meta.llama3-1-70b-instruct-v1:0"
-    inference_profile_arn = "arn:aws:bedrock:us-east-2:980921713309:inference-profile/us.meta.llama3-1-70b-instruct-v1:0"
+    model_id = "meta.llama3-3-70b-instruct-v1:0"  # Updated model ID for on-demand
+    region = "us-east-2"
 
     try:
-        bedrock = boto3.client(service_name="bedrock-runtime", region_name="us-east-2")
+        bedrock = boto3.client(service_name="bedrock-runtime", region_name=region)
 
         response = bedrock.invoke_model(
             modelId=model_id,
             contentType="application/json",
             accept="application/json",
-            body=body,
-            guardrailIdentifier=inference_profile_arn  # Corrected parameter name
+            body=body
         )
 
         response_body = json.loads(response['body'].read().decode('utf-8'))
-
-        response_text = response_body.get('generated_text', 'No response generated')
+        response_text = response_body.get('generation', 'No response generated')
 
         return response_text
 
     except Exception as e:
         return f"Error processing trip plan: {e}"
+
