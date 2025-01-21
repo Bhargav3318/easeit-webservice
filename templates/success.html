@@ -2,31 +2,105 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Trip Plan</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easeit Travel Itinerary</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        h1 { color: #333; }
-        .day-plan { margin-bottom: 20px; }
-        ul { list-style-type: none; padding-left: 0; }
-        li { margin-bottom: 5px; }
-        strong { font-size: 1.2em; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #001f3f, #0056b3);
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 90%;
+            margin: 50px auto;
+            padding: 40px;
+            background: #ffffff;
+            color: #333333;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.8rem;
+            color: #ffffff;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        .day-section {
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+        }
+        .day-section h2 {
+            color: #0056b3;
+            font-size: 2rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .details {
+            padding-left: 20px;
+        }
+        .details ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .details li {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        .total-cost {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #d9534f;
+            margin-top: 30px;
+        }
+        .back-btn {
+            display: block;
+            margin: 30px auto;
+            padding: 15px 30px;
+            background: #007bff;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 18px;
+            width: 250px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        .back-btn:hover {
+            background: #0056b3;
+        }
     </style>
 </head>
 <body>
-    <h1>Trip Plan</h1>
 
-    <div>
+    <h1>Easeit Travel Itinerary</h1>
+
+    <div class="container">
         {% for line in trip_plan %}
-            {% if line.startswith("Destination") %}
-                <h2>{{ line }}</h2>
-            {% elif line.startswith("Duration") or line.startswith("Budget") %}
-                <p><strong>{{ line }}</strong></p>
+            {% if line.startswith("Day") %}
+                <div class="day-section">
+                    <h2>{{ line }}</h2>
+            {% elif line.startswith("Total Estimated Cost") %}
+                    </div>
+                    <p class="total-cost">{{ line }}</p>
+            {% elif line.endswith(":") %}
+                <p><strong>- {{ line }}</strong></p>
             {% else %}
-                <p>{{ line }}</p>
+                <div class="details">
+                    <ul>
+                        <li>{{ line }}</li>
+                    </ul>
+                </div>
             {% endif %}
         {% endfor %}
     </div>
 
-    <a href="{{ url_for('index') }}">Go Back</a>
+    <a href="{{ url_for('index') }}" class="back-btn">Go Back</a>
+
 </body>
 </html>
