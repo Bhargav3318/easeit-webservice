@@ -22,8 +22,11 @@ def process_data(data):
     "\n  - [Meal at Restaurant], Cost: $[amount], Time: [time]"
     "\nKey Highlight:"
     "\n  - [Brief highlight]"
+
+    "mention specific location each tile like names of the locations and how to go there"
     "the budget is for the all people combined so give resonse accordingly and utilze full budget in single and first response and end the response"
     "calculate lunch,breakfast,dinner etc for all people combined"
+    "once the first and single response generated dont make and any changes and leave it."
     "For subsequent days, follow the same format. Include travel modes (bus, flight, train) with respective costs and times. "
     "Plan the return journey and its cost. Fully utilize the budget by adding additional experiences without repeating the plan. "
     "Limit the response to a single itinerary. Do not add explanations, disclaimers, or repetitions. "
