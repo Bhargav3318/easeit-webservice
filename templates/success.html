@@ -3,104 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Easeit Travel Itinerary</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #001f3f, #0056b3);
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 90%;
-            margin: 50px auto;
-            padding: 40px;
-            background: #ffffff;
-            color: #333333;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-        }
-        h1 {
-            text-align: center;
-            font-size: 2.8rem;
-            color: #ffffff;
-            margin-bottom: 30px;
-            font-weight: bold;
-        }
-        .day-section {
-            border-bottom: 2px solid #ddd;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-        }
-        .day-section h2 {
-            color: #0056b3;
-            font-size: 2rem;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-        .details {
-            padding-left: 20px;
-        }
-        .details ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        .details li {
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-        .total-cost {
-            text-align: center;
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #d9534f;
-            margin-top: 30px;
-        }
-        .back-btn {
-            display: block;
-            margin: 30px auto;
-            padding: 15px 30px;
-            background: #007bff;
-            color: #fff;
-            text-align: center;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 18px;
-            width: 250px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-        .back-btn:hover {
-            background: #0056b3;
-        }
-    </style>
+    <title>Your Personalized Trip Plan</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/success.css') }}">
 </head>
 <body>
-
-    <h1>Easeit Travel Itinerary</h1>
-
     <div class="container">
-        {% for line in trip_plan %}
-            {% if line.startswith("Day") %}
-                <div class="day-section">
-                    <h2>{{ line }}</h2>
-            {% elif line.startswith("Total Estimated Cost") %}
-                    </div>
-                    <p class="total-cost">{{ line }}</p>
-            {% elif line.endswith(":") %}
-                <p><strong>- {{ line }}</strong></p>
-            {% else %}
-                <div class="details">
-                    <ul>
-                        <li>{{ line }}</li>
-                    </ul>
+        <h1>Your Personalized Trip Plan</h1>
+        <div class="trip-details">
+            {% if trip_plan %}
+                <div class="trip-content">
+                    {% for item in trip_plan %}
+                        {% if item.startswith("###") %}
+                            <h2>{{ item[4:] }}</h2>
+                        {% elif item.startswith("####") %}
+                            <h3>{{ item[5:] }}</h3>
+                        {% elif item.startswith("-") %}
+                            <p class="list-item">{{ item[1:] }}</p>
+                        {% elif item.startswith("[") and "]" in item %}
+                            <p class="link"><a href="{{ item.split('](')[1][:-1] }}" target="_blank">{{ item.split('](')[0][1:] }}</a></p>
+                        {% elif "Total Estimated Cost" in item %}
+                            <h2 class="cost-heading">{{ item }}</h2>
+                        {% elif "Final Total Cost" in item %}
+                            <p class="final-cost">{{ item }}</p>
+                        {% else %}
+                            <p>{{ item }}</p>
+                        {% endif %}
+                    {% endfor %}
                 </div>
+            {% else %}
+                <p>No trip plan available.</p>
             {% endif %}
-        {% endfor %}
+        </div>
+        <a href="/" class="btn">Go Back</a>
     </div>
-
-    <a href="{{ url_for('index') }}" class="back-btn">Go Back</a>
-
 </body>
 </html>

@@ -1,0 +1,92 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 70%;
+    margin: 50px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.trip-details {
+    text-align: left;
+    padding: 20px;
+    background: #fafafa;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+h2 {
+    color: #007bff;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+    margin-top: 20px;
+}
+
+h3 {
+    color: #0056b3;
+    margin-top: 15px;
+}
+
+.list-item {
+    background: #e8f0fe;
+    padding: 10px;
+    margin: 8px 0;
+    border-left: 5px solid #007bff;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.link a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.link a:hover {
+    text-decoration: underline;
+}
+
+/* Styling for Cost Breakdown */
+.cost-heading {
+    color: #333;
+    font-size: 22px;
+    margin-top: 30px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.final-cost {
+    font-size: 20px;
+    font-weight: bold;
+    color: #d9534f;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    text-decoration: none;
+    background: #007bff;
+    color: white;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.btn:hover {
+    background: #0056b3;
+}

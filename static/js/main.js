@@ -11,27 +11,38 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById('end_date').setAttribute('min', this.value);
     });
 
-    // Fetch country data and initialize select2 for countries
+    // Fetch and populate countries
     fetch('https://restcountries.com/v3.1/all')
         .then(response => response.json())
         .then(data => {
             let countryList = data.map(country => ({
-                id: country.cca2,
+                id: country.name.common,
                 text: country.name.common
             }));
 
             $('#country').select2({
                 placeholder: "Select a country",
                 data: countryList,
-                allowClear: true,
-                matcher: function (params, data) {
-                    if ($.trim(params.term) === '') {
-                        return data;
-                    }
-                    if (data.text.toLowerCase().includes(params.term.toLowerCase())) {
-                        return data;
-                    }
-                    return null;
+                allowClear: true
+            });
+
+            $('#country_optional').select2({
+                placeholder: "Select an optional country",
+                data: countryList,
+                allowClear: true
+            });
+
+            $('#country').on('change', function () {
+                let selectedCountry = $(this).val();
+                if (selectedCountry) {
+                    populateStates(selectedCountry, 'state', 'city');
+                }
+            });
+
+            $(document).on('change', '#country_optional', function () {
+                let selectedCountry = $(this).val();
+                if (selectedCountry) {
+                    populateStates(selectedCountry, 'state_international', 'city_international');
                 }
             });
         })
@@ -61,71 +72,35 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             `;
 
-            // Fetch and populate states and cities for national travel (e.g., United States)
-            fetch('https://countriesnow.space/api/v0.1/countries/states')
-                .then(response => response.json())
-                .then(data => {
-                    let states = data.data.find(country => country.name === 'United States').states;
-                    let stateList = states.map(state => ({
-                        id: state.name,
-                        text: state.name
-                    }));
-
-                    $('#state').select2({
-                        placeholder: "Select a state",
-                        data: stateList,
-                        allowClear: true
-                    });
-
-                    $('#state').on('change', function () {
-                        let selectedState = $(this).val();
-                        fetch('https://countriesnow.space/api/v0.1/countries/state/cities', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ country: 'United States', state: selectedState })
-                        })
-                            .then(response => response.json())
-                            .then(cityData => {
-                                let cityList = cityData.data.map(city => ({
-                                    id: city,
-                                    text: city
-                                }));
-
-                                $('#city').empty().select2({
-                                    data: cityList,
-                                    placeholder: "Select a city",
-                                    allowClear: true
-                                });
-                            })
-                            .catch(error => console.error('Error fetching city data:', error));
-                    });
-                })
-                .catch(error => console.error('Error fetching state data:', error));
+            let selectedCountry = $('#country').val();
+            if (selectedCountry) {
+                populateStates(selectedCountry, 'state', 'city');
+            }
         } else if (travelType === 'international') {
             locationFields.innerHTML = `
                 <div class="form-row">
                     <div class="form-group">
                         <label for="country_optional">Country (Optional):</label>
-                        <select id="country_optional" name="country_optional" style="width: 100%;">
+                        <select id="country_optional" name="country_optional" style="width: 100%;" required>
                             <option value="">Select an optional country</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="state">State (Optional):</label>
-                        <select id="state" name="state" style="width: 100%;">
+                        <label for="state_international">State (Optional):</label>
+                        <select id="state_international" name="state" style="width: 100%;">
                             <option value="">Select a state</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="city">City (Optional):</label>
-                        <select id="city" name="city" style="width: 100%;">
+                        <label for="city_international">City (Optional):</label>
+                        <select id="city_international" name="city" style="width: 100%;">
                             <option value="">Select a city</option>
                         </select>
                     </div>
                 </div>
             `;
 
-            // Fetch and populate countries
+            // Reinitialize select2 for newly added elements
             fetch('https://restcountries.com/v3.1/all')
                 .then(response => response.json())
                 .then(data => {
@@ -142,47 +117,64 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     $('#country_optional').on('change', function () {
                         let selectedCountry = $(this).val();
-                        fetch('https://countriesnow.space/api/v0.1/countries/states')
-                            .then(response => response.json())
-                            .then(data => {
-                                let countryData = data.data.find(c => c.name === selectedCountry);
-                                if (countryData) {
-                                    let stateList = countryData.states.map(state => ({
-                                        id: state.name,
-                                        text: state.name
-                                    }));
-
-                                    $('#state').empty().select2({
-                                        data: stateList,
-                                        placeholder: "Select a state",
-                                        allowClear: true
-                                    });
-
-                                    $('#state').on('change', function () {
-                                        let selectedState = $(this).val();
-                                        fetch('https://countriesnow.space/api/v0.1/countries/state/cities', {
-                                            method: 'POST',
-                                            headers: { 'Content-Type': 'application/json' },
-                                            body: JSON.stringify({ country: selectedCountry, state: selectedState })
-                                        })
-                                            .then(response => response.json())
-                                            .then(cityData => {
-                                                let cityList = cityData.data.map(city => ({
-                                                    id: city,
-                                                    text: city
-                                                }));
-
-                                                $('#city').empty().select2({
-                                                    data: cityList,
-                                                    placeholder: "Select a city",
-                                                    allowClear: true
-                                                });
-                                            });
-                                    });
-                                }
-                            });
+                        if (selectedCountry) {
+                            populateStates(selectedCountry, 'state_international', 'city_international');
+                        }
                     });
-                });
+                })
+                .catch(error => console.error('Error fetching country data:', error));
         }
     });
+
+    // Function to fetch and populate states based on the selected country
+    function populateStates(countryName, stateId, cityId) {
+        fetch('https://countriesnow.space/api/v0.1/countries/states')
+            .then(response => response.json())
+            .then(data => {
+                let countryData = data.data.find(c => c.name.toLowerCase() === countryName.toLowerCase());
+                if (countryData) {
+                    let stateList = countryData.states.map(state => ({
+                        id: state.name,
+                        text: state.name
+                    }));
+
+                    $(`#${stateId}`).empty().select2({
+                        data: stateList,
+                        placeholder: "Select a state",
+                        allowClear: true
+                    });
+
+                    $(`#${stateId}`).on('change', function () {
+                        let selectedState = $(this).val();
+                        populateCities(countryName, selectedState, cityId);
+                    });
+                } else {
+                    console.error("No states found for selected country");
+                }
+            })
+            .catch(error => console.error('Error fetching states:', error));
+    }
+
+    // Function to fetch and populate cities based on the selected state
+    function populateCities(countryName, stateName, cityId) {
+        fetch('https://countriesnow.space/api/v0.1/countries/state/cities', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ country: countryName, state: stateName })
+        })
+        .then(response => response.json())
+        .then(cityData => {
+            let cityList = cityData.data.map(city => ({
+                id: city,
+                text: city
+            }));
+
+            $(`#${cityId}`).empty().select2({
+                data: cityList,
+                placeholder: "Select a city",
+                allowClear: true
+            });
+        })
+        .catch(error => console.error(`Error fetching cities for ${stateName}:`, error));
+    }
 });

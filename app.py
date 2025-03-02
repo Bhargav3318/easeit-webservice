@@ -10,29 +10,32 @@ def index():
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    # Collecting form data including the new fields
     data = {
-        'start_date': request.form['start_date'],
-        'end_date': request.form['end_date'],
-        'budget': request.form['budget'],
-        'adults': request.form['adults'],
-        'children': request.form['children'],
-        'country': request.form['country'],
-        'state': request.form['state'],
-        'city': request.form['city'],
-        'travel_type': request.form['travel_type'],
-        'preferences': request.form['preferences']
+        'start_date': request.form.get('start_date'),
+        'end_date': request.form.get('end_date'),
+        'budget': request.form.get('budget'),
+        'adults': request.form.get('adults'),
+        'children': request.form.get('children'),
+        'country': request.form.get('country'),
+        'zipcode': request.form.get('zipcode', ''),  # Optional field
+        'nearest_airport': request.form.get('nearest_airport', ''),  # Optional field
+        'travel_type': request.form.get('travel_type'),
+        'country_optional': request.form.get('country_optional', ''),  # Optional international field
+        'state': request.form.get('state', ''),  # Optional field for national/international
+        'city': request.form.get('city', ''),  # Optional field for national/international
+        'preferences': request.form.get('preferences')
     }
+    print(data)
 
     try:
         plan_text = process_data(data)
-
-        # Convert the structured text to dictionary format
-        formatted_plan = format_trip_plan(plan_text)
+        formatted_plan = plan_text.split("\n")  # Convert response into a list for iteration in HTML
+        
         return render_template('success.html', trip_plan=formatted_plan)
 
     except Exception as e:
-        return f"Error processing trip plan: {e}"
+        return jsonify({"error": str(e)})
+
 
 def format_trip_plan(plan_text):
     """ Function to parse and structure the travel plan text into a dictionary """
@@ -47,4 +50,4 @@ def format_trip_plan(plan_text):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(host='0.0.0.0', port=5000)

@@ -1,113 +1,120 @@
-import json
-import boto3
+import requests
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
+# GROQ API Configuration
+GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+GROQ_API_KEY = "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"  # Replace with your actual API key
 
 def process_data(data):
-    prompt_text = (
-    f"I am planning a trip from {data['city']}, {data['state']}, {data['country']} "
-    f"for {data['adults']} adult(s) and {data['children']} child(ren) "
-    f"from {data['start_date']} to {data['end_date']}. "
-    f"My total budget is {data['budget']} USD. "
-    f"My preferences include: {data['preferences']}. "
-    f"It will be a {data['travel_type']} trip. "
+    """Generates a structured travel itinerary using the Groq API"""
+    try:
+        # Create input prompt
+        user_prompt = (
+    f"Plan a detailed {data['travel_type']} trip for {data['adults']} adult(s) and {data['children']} "
+    f"from {data['country']} (Zipcode: {data['zipcode']}). "
+    f"to (these are optional fields) {data['city']}, {data['state']} , {data['country_optional']}"
+    f"Trip duration: {data['start_date']} to {data['end_date']}."
+    f"Budget: ${data['budget']} USD (total for all travelers). "
+    f"Preferred travel mode: [Flight/Train/Bus] from {data['nearest_airport']}."
+    f"Destination preferences: {data['preferences']}."
+    "[start here]"
+    "\n\n### **Travel Itinerary**\n"
+    "\n- Departure: [Type: Flight/Train/Bus] from [Nearest Airport/Station] at [Time]. Duration: [X hours]. Cost: $[Amount]."
+    "\n- Destination Arrival: [City, State, Country] at [Time]."
+    "\n [Link to book with all inputs]"
+    "\n\n**Day-wise Plan:**"
 
-    "process and understand and find best solution and Generate a original single, concise, and structured travel itinerary that optimally utilizes my budget without exceeding it."
-    "Ensure the response is in the following format and does not contain duplicate content:"
-    "\n Travel cost [type] [amount$] to [destination]"
-    "\nDay 1: [Title]"
-    "\nActivities per day:"
-    "\n  - [Activity name], Cost: $[amount], Time: [time]"
-    "\nAccommodation:"
-    "\n  - [Hotel name], Cost: $[amount]"
-    "\nMeals:"
-    "\n  - [Meal at Restaurant], Cost: $[amount], Time: [time]"
-    "\nKey Highlight:"
-    "\n  - [Brief highlight]"
+    "\n#### **Day 1: Arrival & Exploration**"
+    "\n- Check-in at: [Hotel Name]. Cost: $[Amount]."
+    "\n [Link to book with all inputs]"
+    "\n- Morning Activity: [Activity Name]. Cost: $[Amount]. Time: [Start Time - End Time]."
+    "\n [Link to book with all inputs]"
+    "\n- Lunch: [Restaurant Name]. Cost: $[Amount]. Time: [Time]."
+    "\n [Link to book with all inputs]"
+    "\n- Afternoon Activity: [Activity Name]. Cost: $[Amount]. Time: [Start Time - End Time]."
+    "\n [Link to book with all inputs]"
+    "\n- Evening Exploration: [Landmark/Special Place]. Cost: $[Amount]."
+    "\n [Link to book with all inputs]"
+    "\n- Dinner: [Restaurant Name]. Cost: $[Amount]. Time: [Time]."
+    "\n [Link to book with all inputs]"
+    "\n- Accommodation: [Hotel Name]. Cost: $[Amount]."
+    "\n [Link to book with all inputs]"
 
-    "mention specific location each tile like names of the locations and how to go there"
-    "the budget is for the all people combined so give resonse accordingly and utilze full budget in single and first response and end the response"
-    "calculate lunch,breakfast,dinner etc for all people combined"
-    "once the first and single response generated dont make and any changes and leave it."
-    "For subsequent days, follow the same format. Include travel modes (bus, flight, train) with respective costs and times. "
-    "Plan the return journey and its cost. Fully utilize the budget by adding additional experiences without repeating the plan. "
-    "Limit the response to a single itinerary. Do not add explanations, disclaimers, or repetitions. "
-    "Stop the response after providing the total estimated trip cost as follows:"
-    "give just the correct data in first single response dont repeat the responces and total estimated cost should be the total money spent in the trip"
-    "\nTotal Estimated Cost: $[amount]"
-    "end response here dont generate any further"
-    """example
-        Travel cost Flight $200 to Asheville, North Carolina
-            Day 1: Adventure Begins
-            - Activities per day:
+    "\n#### **Day 2 & Beyond:** (Repeat similar structure for each day)"
+    "\n- Morning Activity: [Activity Name]. Cost: $[Amount]. Time: [Start Time - End Time]."
+    "\n [Link to book with all inputs]"
+    "\n- Lunch: [Restaurant Name]. Cost: $[Amount]. Time: [Time]."
+    "\n [Link to book with all inputs]"
+    "\n- Afternoon Activity: [Activity Name]. Cost: $[Amount]. Time: [Start Time - End Time]."
+    "\n [Link to book with all inputs]"
+    "\n- Evening Exploration: [Landmark/Special Place]. Cost: $[Amount]."
+    "\n [Link to book with all inputs]"
+    "\n- Dinner: [Restaurant Name]. Cost: $[Amount]. Time: [Time]."
+    "\n [Link to book with all inputs]"
+    "\n- Accommodation: [Hotel Name]. Cost: $[Amount]."
+    "\n [Link to book with all inputs]"
 
-            - Whitewater Rafting, Cost: $80, Time: 9:00 AM - 12:00 PM
-            - Zip Line Canopy Tour, Cost: $60, Time: 2:00 PM - 4:00 PM
-            - Accommodation:
+    "\n#### **Return Journey**"
+    "\n- Check-out from [Hotel Name]."
+    "\n [Link to book with all inputs]"
+    "\n- Departure: [Flight/Train/Bus] from [City] at [Time]. Cost: $[Amount]."
+    "\n [Link to book with all inputs]"
+    "\n- Arrival back at [Original City] at [Time]."
+    "\n [Link to book with all inputs]"
 
-            - Hotel Indigo, Cost: $120
-            - Meals:
+    "\n### **Total Estimated Cost:**"
+    "\n- Travel Cost: $[Amount]"
+    "\n- Accommodation: $[Amount]"
+    "\n- Meals: $[Amount]"
+    "\n- Activities & Experiences: $[Amount]"
+    "\n**Final Total Cost: $[Amount]** (Fully utilizing the budget)."
+    "[end here]"
 
-            - Breakfast at The Early Girl Eatery, Cost: $20, Time: 7:00 AM - 8:00 AM
-            - Lunch at The White Duck Taco Shop, Cost: $30, Time: 12:00 PM - 1:00 PM
-            - Dinner at Buxton Hall Barbecue, Cost: $40, Time: 6:00 PM - 7:30 PM
-            - Key Highlight:
-
-            - Explore the scenic beauty of Asheville River Arts District
-            Day 2: Nature Escapade
-            - Activities per day:
-
-            - Hiking at Pisgah National Forest, Cost: $0, Time: 8:00 AM - 12:00 PM
-            - LaZoom Comedy Tour, Cost: $30, Time: 2:00 PM - 4:00 PM
-            - Accommodation:
-
-            - Hotel Indigo, Cost: $120
-            - Meals:
-
-            - Breakfast at The Nightbell, Cost: $25, Time: 7:00 AM - 8:00 AM
-            - Lunch at The Lobster Trap, Cost: $35, Time: 12:00 PM - 1:00 PM
-            - Dinner at Curate, Cost: $50, Time: 6:00 PM - 7:30 PM
-            - Key Highlight:
-
-            - Discover the vibrant street art in Downtown Asheville
-            Day 3: Return Journey
-            - Activities per day:
-
-            - Asheville River Arts Market, Cost: $10, Time: 9:00 AM - 12:00 PM
-            Travel cost Flight $200 to Orlando, Florida
-            Total Estimated Cost: $485
-    
-    """
-    "give 2 different plans plan1: and plan 2:"
-    "after generating total estimated cost end response there"
+    "\n\n**Guidelines:**"
+    "\n - give very accurate links which will work first seee the link if the link is valid then give it. do this for every link"
+    "\n- Use realistic pricing for flights, hotels, food, and activities."
+    "\n- Include family-friendly activities if children are present."
+    "\n- Ensure each day has a variety of experiences."
+    "\n- Fully utilize the given budget without exceeding it."
+    "\n- Do not repeat content. Generate a structured, single-response itinerary."
+    "\n give links for every this like hotel bookings and accomedation , activity tickets etc for every thing and all inputs loded in the link"
+    "\n make travel plans for best budget and time saving"
+    "\n activities must me exciting depending upon adults and childern"
 )
 
 
+        payload = {
+            "model": "llama3-70b-8192",
+            "messages": [
+                {"role": "system", "content": "You are an expert travel planner. Generate an optimized itinerary."},
+                {"role": "user", "content": user_prompt},
+            ],
+            "temperature": 0.5,
+            "max_tokens": 1212,
+            "top_p": 0.8
+        }
 
-    payload = {
-        "prompt": prompt_text,
-        "max_gen_len": 1212,
-        "temperature": 0.5,
-        "top_p": 0.8
-    }
+        headers = {
+            "Authorization": f"Bearer {GROQ_API_KEY}",
+            "Content-Type": "application/json"
+        }
 
-    body = json.dumps(payload)
+        # Send request to Groq API
+        response = requests.post(GROQ_API_URL, headers=headers, json=payload)
 
-    model_id = "meta.llama3-3-70b-instruct-v1:0"  # Updated model ID for on-demand
-    region = "us-east-2"
+        # Log API response
+        logging.info(f"GROQ API Response: {response.text}")
 
-    try:
-        bedrock = boto3.client(service_name="bedrock-runtime", region_name=region)
-
-        response = bedrock.invoke_model(
-            modelId=model_id,
-            contentType="application/json",
-            accept="application/json",
-            body=body
-        )
-
-        response_body = json.loads(response['body'].read().decode('utf-8'))
-        response_text = response_body.get('generation', 'No response generated')
-
-        return response_text
+        # Extract response text
+        if response.status_code == 200:
+            response_text = response.json().get("choices", [{}])[0].get("message", {}).get("content", "No response generated")
+            return response_text
+        else:
+            return f"API Error: {response.status_code} - {response.text}"
 
     except Exception as e:
-        return f"Error processing trip plan: {e}"
+        logging.error(f"Error processing trip plan: {e}")
+        return f"Error: {str(e)}"
