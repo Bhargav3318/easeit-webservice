@@ -74,6 +74,7 @@ def process_data(data):
     "[end here]"
 
     "\n\n**Guidelines:**"
+    "\n check start date and end date make plan for every day included complete trip and cover evry day."
     "\n- do not even give an extra letter other than the format given not even a single word just response should begin from **Travel Itinerary** and end at end make it professional"
     "\n dont give these type of response for the days 'Repeat similar structure for each day.' give different types of activities for the days. start to end for everyday dont skip make it all complete"
     "\n- Everything should be very accurate and no error is accepted must follow all guidelines."
