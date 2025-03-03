@@ -74,7 +74,7 @@ def process_data(data):
     "[end here]"
 
     "\n\n**Guidelines:**"
-    "\n- do not even give an extra letter other than the format given not even a single word just start from start and end at end make it professional also give links of the images of the place."
+    "\n- do not even give an extra letter other than the format given not even a single word just response should begin from **Travel Itinerary** and end at end make it professional also give links of the images of the place."
     "\n- Everything should be very accurate and no error is accepted must follow all guidelines."
     "\n - give very accurate links which will work first seee the link if the link is valid then give it. do this for every link"
     "\n- Use realistic pricing for flights, hotels, food, and activities."
@@ -95,7 +95,7 @@ def process_data(data):
                 {"role": "user", "content": user_prompt},
             ],
             "temperature": 0.5,
-            "max_tokens": 1212,
+            "max_tokens": 12120,
             "top_p": 0.8
         }
 
