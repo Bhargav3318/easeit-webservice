@@ -86,6 +86,7 @@ def process_data(data):
     "\n give links for every this like hotel bookings and accomedation , activity tickets etc for every thing and all inputs loded in the link"
     "\n make travel plans for best budget and time saving"
     "\n activities must me exciting depending upon adults and childern"
+    "\n dont include '*' in your response"
 )
 
 
