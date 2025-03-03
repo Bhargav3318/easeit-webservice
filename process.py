@@ -27,7 +27,7 @@ def process_data(data):
     "\n [Link to book with all inputs]"
     "\n\n**Day-wise Plan:**"
 
-    "\n#### **Day 1: Arrival & Exploration**"
+    "\n#### **Day 1: Arrival & Exploration [Date]**"
     "\n- Check-in at: [Hotel Name]. Cost: $[Amount]."
     "\n [Link to book with all inputs]"
     "\n- Morning Activity: [Activity Name]. Cost: $[Amount]. Time: [Start Time - End Time]."
@@ -43,7 +43,7 @@ def process_data(data):
     "\n- Accommodation: [Hotel Name]. Cost: $[Amount]."
     "\n [Link to book with all inputs]"
 
-    "\n#### **Day 2 & Beyond:** (Repeat similar structure for each day)"
+    "\n#### **Day 2 & Beyond:** (Repeat similar structure for each day)[date]"
     "\n- Morning Activity: [Activity Name]. Cost: $[Amount]. Time: [Start Time - End Time]."
     "\n [Link to book with all inputs]"
     "\n- Lunch: [Restaurant Name]. Cost: $[Amount]. Time: [Time]."
@@ -57,7 +57,7 @@ def process_data(data):
     "\n- Accommodation: [Hotel Name]. Cost: $[Amount]."
     "\n [Link to book with all inputs]"
 
-    "\n#### **Return Journey**"
+    "\n#### **Return Journey [date]**"
     "\n- Check-out from [Hotel Name]."
     "\n [Link to book with all inputs]"
     "\n- Departure: [Flight/Train/Bus] from [City] at [Time]. Cost: $[Amount]."
@@ -82,7 +82,7 @@ def process_data(data):
     "\n- Use realistic pricing for flights, hotels, food, and activities."
     "\n- Include family-friendly activities if children are present."
     "\n- Ensure each day has a variety of experiences."
-    "\n- Fully utilize the given budget without exceeding it."
+    "\n- Fully utilize the given budget without exceeding it and make no error at final estimation and prices."
     "\n- Do not repeat content. Generate a structured, single-response itinerary."
     "\n give links for every this like hotel bookings and accomedation , activity tickets etc for every thing and all inputs loded in the link"
     "\n make travel plans for best budget and time saving"
