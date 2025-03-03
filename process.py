@@ -74,6 +74,8 @@ def process_data(data):
     "[end here]"
 
     "\n\n**Guidelines:**"
+    "\n- do not even give an extra letter other than the format given not even a single word just start from start and end at end make it professional also give links of the images of the place."
+    "\n- Everything should be very accurate and no error is accepted must follow all guidelines."
     "\n - give very accurate links which will work first seee the link if the link is valid then give it. do this for every link"
     "\n- Use realistic pricing for flights, hotels, food, and activities."
     "\n- Include family-friendly activities if children are present."
