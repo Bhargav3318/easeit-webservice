@@ -19,12 +19,10 @@
                             <h3>{{ item[5:] }}</h3>
                         {% elif item.startswith("-") %}
                             <p class="list-item">{{ item[1:] }}</p>
-                        {% elif item.startswith("[") and "]" in item %}
-                            <p class="link"><a href="{{ item.split('](')[1][:-1] }}" target="_blank">{{ item.split('](')[0][1:] }}</a></p>
-                        {% elif "Total Estimated Cost" in item %}
-                            <h2 class="cost-heading">{{ item }}</h2>
-                        {% elif "Final Total Cost" in item %}
-                            <p class="final-cost">{{ item }}</p>
+                        {% elif "[" in item and "](" in item %}
+                            {% set link_text = item.split('](')[0][1:] %}
+                            {% set link_url = item.split('](')[1][:-1] %}
+                            <p class="link"><a href="{{ link_url }}" target="_blank">{{ link_text }}</a></p>
                         {% else %}
                             <p>{{ item }}</p>
                         {% endif %}
