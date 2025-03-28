@@ -6,8 +6,8 @@
   <title>Your Personalized Premium Trip Plan | Easeit Travel</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/success.css') }}" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.css">
 </head>
 <body>
@@ -188,42 +188,19 @@
     }
 
     
-        async function downloadPDF() {
-          const element = document.getElementById('full-trip-plan');
-          const canvas = await html2canvas(element, {
-            scale: 2,
-            useCORS: true,
-            scrollY: -window.scrollY,
-            height: element.scrollHeight,
-            windowHeight: element.scrollHeight
-          });
+    async function downloadPDF() {
+        const element = document.body; // Full page content
+        const opt = {
+          margin:       0.5,
+          filename:     'easeit-trip-plan.pdf',
+          image:        { type: 'jpeg', quality: 0.98 },
+          html2canvas:  { scale: 2, scrollY: 0 },
+          jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
       
-          const imgData = canvas.toDataURL('image/png');
-          const pdf = new jspdf.jsPDF('p', 'pt', 'a4');
+        await html2pdf().set(opt).from(element).save();
+      }
       
-          const pdfWidth = pdf.internal.pageSize.getWidth();
-          const pdfHeight = pdf.internal.pageSize.getHeight();
-      
-          const imgProps = pdf.getImageProperties(imgData);
-          const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      
-          let heightLeft = imgHeight;
-          let position = 0;
-      
-          // Add first page
-          pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
-          heightLeft -= pdfHeight;
-      
-          // Add remaining pages
-          while (heightLeft > 0) {
-            position -= pdfHeight;
-            pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
-            heightLeft -= pdfHeight;
-          }
-      
-          pdf.save('easeit-trip-plan.pdf');
-        }
       
       
 

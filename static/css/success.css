@@ -426,3 +426,36 @@ body.dark-mode {
     color: #90caf9;
   }
   
+  @media (max-width: 480px) {
+    .premium-container {
+      padding: 1rem 0.5rem;
+    }
+  
+    .premium-header {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+    }
+  
+    .trip-header h1 {
+      font-size: 1.75rem;
+    }
+  
+    .trip-subtitle {
+      font-size: 1rem;
+    }
+  
+    .expense-grid {
+      grid-template-columns: 1fr !important;
+    }
+  
+    .action-buttons {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+  
+    .btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }

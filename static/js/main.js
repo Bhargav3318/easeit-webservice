@@ -17,13 +17,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 id: country.name.common,
                 text: country.name.common
             }));
-            // Initialize main country select with Select2 for searchability
             $("#country").select2({
                 placeholder: "Select a country",
                 data: countryListData,
                 allowClear: true
             });
-            // When a country is chosen, load its states if needed (for national travel)
             $("#country").on("change", function () {
                 const selectedCountry = $(this).val();
                 if (selectedCountry) {
@@ -33,59 +31,61 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch(err => console.error("Error fetching country data:", err));
 
-    // Handle dynamic location fields based on travel type selection
     document.getElementById("travel_type").addEventListener("change", function () {
         const travelType = this.value;
+
+        // Reset country and state fields when travel type changes
+        const countrySelect = document.getElementById("country");
+        if (countrySelect) {
+            $(countrySelect).val(null).trigger("change");
+        }
+
         const locationFields = document.getElementById("location-fields");
-        locationFields.innerHTML = "";  // Clear any previous fields
+        locationFields.innerHTML = "";
         if (travelType === "national") {
-            // Show state and city selectors for national travel
             locationFields.innerHTML = `
                 <div class="form-row">
                     <div class="form-group">
                         <label for="state">State (Optional):</label>
                         <select id="state" name="state" style="width: 100%;">
-                            <option value="">Select a state</option>
+                            <option value=""disabled selected>Select a state</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="city">City/Town (Optional):</label>
                         <select id="city" name="city" style="width: 100%;">
-                            <option value="">Select a city</option>
+                            <option value=""disabled selected>Select a city</option>
                         </select>
                     </div>
                 </div>
             `;
-            // If a country is already selected, populate its states immediately
             const selectedCountry = $("#country").val();
             if (selectedCountry) {
                 populateStates(selectedCountry, "state", "city");
             }
         } else if (travelType === "international") {
-            // Show country (optional second country), state, and city for international travel
             locationFields.innerHTML = `
                 <div class="form-row">
                     <div class="form-group">
                         <label for="country_optional">Country (Optional):</label>
                         <select id="country_optional" name="country_optional" style="width: 100%;">
-                            <option value="">Select an optional country</option>
+                            <option value=""disabled selected>Select an optional country</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="state_international">State (Optional):</label>
                         <select id="state_international" name="state" style="width: 100%;">
-                            <option value="">Select a state</option>
+                            <option value=""disabled selected>Select a state</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="city_international">City (Optional):</label>
                         <select id="city_international" name="city" style="width: 100%;">
-                            <option value="">Select a city</option>
+                            <option value=""disabled selected>Select a city</option>
                         </select>
                     </div>
                 </div>
             `;
-            // Initialize the optional country selector using the loaded country list
             if (countryListData.length) {
                 $("#country_optional").select2({
                     placeholder: "Select an optional country",
@@ -93,7 +93,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     allowClear: true
                 });
             } else {
-                // Fallback fetch if country data not loaded yet (unlikely to happen due to initial fetch)
                 fetch("https://restcountries.com/v3.1/all")
                     .then(response => response.json())
                     .then(data => {
@@ -109,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     })
                     .catch(err => console.error("Error fetching country data:", err));
             }
-            // When an optional country is selected, populate its states and cities
+
             $("#country_optional").on("change", function () {
                 const selectedCountry = $(this).val();
                 if (selectedCountry) {
@@ -119,7 +118,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Fetch and populate states for a given country into the specified state and city select elements
     function populateStates(countryName, stateSelectId, citySelectId) {
         fetch("https://countriesnow.space/api/v0.1/countries/states")
             .then(response => response.json())
@@ -132,13 +130,11 @@ document.addEventListener("DOMContentLoaded", function () {
                         id: s.name,
                         text: s.name
                     }));
-                    // Populate state dropdown with Select2
                     $(`#${stateSelectId}`).empty().select2({
                         data: stateList,
                         placeholder: "Select a state",
                         allowClear: true
                     });
-                    // When a state is selected, load its cities
                     $(`#${stateSelectId}`).on("change", function () {
                         const selectedState = $(this).val();
                         populateCities(countryName, selectedState, citySelectId);
@@ -150,7 +146,6 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(err => console.error("Error fetching states:", err));
     }
 
-    // Fetch and populate cities for a given state into the specified city select element
     function populateCities(countryName, stateName, citySelectId) {
         fetch("https://countriesnow.space/api/v0.1/countries/state/cities", {
             method: "POST",
@@ -163,7 +158,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     id: city,
                     text: city
                 }));
-                // Populate city dropdown with Select2
                 $(`#${citySelectId}`).empty().select2({
                     data: cityList,
                     placeholder: "Select a city",
