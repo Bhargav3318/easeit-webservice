@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, jsonify
-import json
 from process import process_data
 
 app = Flask(__name__)
@@ -17,37 +16,21 @@ def submit():
         'adults': request.form.get('adults'),
         'children': request.form.get('children'),
         'country': request.form.get('country'),
-        'zipcode': request.form.get('zipcode', ''),  # Optional field
-        'nearest_airport': request.form.get('nearest_airport', ''),  # Optional field
+        'zipcode': request.form.get('zipcode', ''),
+        'nearest_airport': request.form.get('nearest_airport', ''),
         'travel_type': request.form.get('travel_type'),
-        'country_optional': request.form.get('country_optional', ''),  # Optional international field
-        'state': request.form.get('state', ''),  # Optional field for national/international
-        'city': request.form.get('city', ''),  # Optional field for national/international
+        'country_optional': request.form.get('country_optional', ''),
+        'state': request.form.get('state', ''),
+        'city': request.form.get('city', ''),
         'preferences': request.form.get('preferences')
     }
-    print(data)
+    print(data)  # Debug: print form input data to console
 
     try:
-        plan_text = process_data(data)
-        formatted_plan = plan_text.split("\n")  # Convert response into a list for iteration in HTML
-        
+        formatted_plan = process_data(data)
         return render_template('success.html', trip_plan=formatted_plan)
-
     except Exception as e:
         return jsonify({"error": str(e)})
-
-
-def format_trip_plan(plan_text):
-    """ Function to parse and structure the travel plan text into a dictionary """
-    trip_plan = []
-    lines = plan_text.split("\n")  # Splitting by newlines
-
-    for line in lines:
-        if line.strip():
-            trip_plan.append(line.strip())  # Clean and add to the list
-
-    return trip_plan
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

@@ -1,66 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Easeit - Travel Preferences</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Easeit – Travel Planner</title>
+    <!-- Google Font for modern typography -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <!-- Select2 CSS for enhanced dropdowns -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
 </head>
 <body>
     <div class="container">
         <h1>Easeit Travel Planner</h1>
         <p class="tagline">Plan your perfect trip with ease!</p>
         <form action="/submit" method="POST">
-            
             <div class="form-row">
                 <div class="form-group">
                     <label for="start_date">Start Date:</label>
-                    <input type="date" id="start_date" name="start_date" required>
+                    <input type="date" id="start_date" name="start_date" required />
                 </div>
-
                 <div class="form-group">
                     <label for="end_date">End Date:</label>
-                    <input type="date" id="end_date" name="end_date" required>
+                    <input type="date" id="end_date" name="end_date" required />
                 </div>
             </div>
-
             <div class="form-row">
                 <div class="form-group">
                     <label for="budget">Budget ($):</label>
-                    <input type="number" id="budget" name="budget" min="0" step="0.01" required>
+                    <input type="number" id="budget" name="budget" min="0" step="0.01" required />
                 </div>
-
                 <div class="form-group">
                     <label for="adults">Number of Adults:</label>
-                    <input type="number" id="adults" name="adults" min="1" required>
+                    <input type="number" id="adults" name="adults" min="1" required />
                 </div>
             </div>
-
             <div class="form-row">
                 <div class="form-group">
                     <label for="children">Number of Children:</label>
-                    <input type="number" id="children" name="children" min="0" required>
+                    <input type="number" id="children" name="children" min="0" required />
                 </div>
-
                 <div class="form-group">
                     <label for="zipcode">Zip Code:</label>
-                    <input type="text" id="zipcode" name="zipcode" required placeholder="Enter your zip code">
+                    <input type="text" id="zipcode" name="zipcode" placeholder="Enter your zip code" required />
                 </div>
             </div>
-
             <div class="form-group">
                 <label for="country">Country:</label>
                 <select id="country" name="country" required>
                     <option value="">Select a country</option>
                 </select>
             </div>
-
             <div class="form-group">
                 <label for="nearest_airport">Nearest Airport (Optional):</label>
-                <input type="text" id="nearest_airport" name="nearest_airport" placeholder="Enter nearest airport (if known)">
+                <input type="text" id="nearest_airport" name="nearest_airport" placeholder="Enter nearest airport (if known)" />
             </div>
-
             <div class="form-group">
                 <label for="travel_type">Travel Type:</label>
                 <select id="travel_type" name="travel_type" required>
@@ -69,25 +64,19 @@
                     <option value="international">International</option>
                 </select>
             </div>
-
+            <!-- Dynamic location fields will be injected here -->
             <div id="location-fields"></div>
-
             <div class="form-group">
                 <label for="preferences">Travel Preferences:</label>
-                <textarea id="preferences" name="preferences" 
-                    placeholder="Tell us about your travel preferences" required></textarea>
+                <textarea id="preferences" name="preferences" placeholder="Tell us about your travel preferences" required></textarea>
             </div>
-
             <button type="submit">Plan My Trip</button>
         </form>
     </div>
-
+    <!-- jQuery and Select2 JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <!-- Main JavaScript -->
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css">
-
 </body>
 </html>

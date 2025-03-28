@@ -1,38 +1,249 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Personalized Trip Plan</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/success.css') }}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Personalized Premium Trip Plan | Easeit Travel</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/success.css') }}" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Your Personalized Trip Plan</h1>
-        <div class="trip-details">
-            {% if trip_plan %}
-                <div class="trip-content">
-                    {% for item in trip_plan %}
-                        {% if item.startswith("###") %}
-                            <h2>{{ item[4:] }}</h2>
-                        {% elif item.startswith("####") %}
-                            <h3>{{ item[5:] }}</h3>
-                        {% elif item.startswith("-") %}
-                            <p class="list-item">{{ item[1:] }}</p>
-                        {% elif "[" in item and "](" in item %}
-                            {% set link_text = item.split('](')[0][1:] %}
-                            {% set link_url = item.split('](')[1][:-1] %}
-                            <p class="link"><a href="{{ link_url }}" target="_blank">{{ link_text }}</a></p>
-                        {% else %}
-                            <p>{{ item }}</p>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p>No trip plan available.</p>
+  <div class="premium-container">
+    <header class="premium-header">
+      <div class="logo">Easeit <span>Travel</span></div>
+      <div class="header-actions">
+        <button id="theme-toggle" class="theme-btn">
+          <i data-feather="moon"></i>
+        </button>
+        <button onclick="downloadPDF()" class="export-btn">
+          <i data-feather="download"></i> Export PDF
+        </button>
+      </div>
+    </header>
+
+    <main class="trip-plan-content">
+      <div class="trip-header">
+        <h1>Your Personalized Premium Trip Plan</h1>
+        <p class="trip-subtitle">Curated with precision, designed for your comfort</p>
+      </div>
+
+      {% if trip_plan %}
+        {% set colors = ['light-card', 'dark-card'] %}
+        {% set color_idx = 0 %}
+        {% set day_count = 0 %}
+
+        {% set summary = {'travel': 0.0, 'accommodation': 0.0, 'meals': 0.0, 'activities': 0.0, 'total': 0.0} %}
+        {% for line in trip_plan %}
+          {% if 'travel cost:' in line.lower() %}
+            {% set summary = summary.update({'travel': line.split('$')[-1]|float}) or summary %}
+          {% elif 'accommodation:' in line.lower() %}
+            {% set summary = summary.update({'accommodation': line.split('$')[-1]|float}) or summary %}
+          {% elif 'meals:' in line.lower() %}
+            {% set summary = summary.update({'meals': line.split('$')[-1]|float}) or summary %}
+          {% elif 'activities' in line.lower() %}
+            {% set summary = summary.update({'activities': line.split('$')[-1]|float}) or summary %}
+          {% elif 'final total cost:' in line.lower() %}
+            {% set summary = summary.update({'total': line.split('$')[-1].split()[0]|float}) or summary %}
+          {% endif %}
+        {% endfor %}
+
+        <div id="full-trip-plan" class="itinerary-container">
+          {% for item in trip_plan %}
+            {% set text = item.strip() %}
+            {% if text.lower().startswith('day') %}
+              {% set day_count = day_count + 1 %}
+              {% if not loop.first %}</div>{% endif %}
+              <div class="day-section {{ colors[color_idx % 2] }} reveal-animation">
+                <h2 class="day-title">{{ text }}</h2>
+              {% set color_idx = color_idx + 1 %}
+            {% elif 'http' in text %}
+              <div class="booking-links">
+                <a href="{{ text }}" target="_blank" class="premium-link inline-link">
+                  <i data-feather="link"></i> Book Experience
+                </a>
+              </div>
+              {% elif text and
+                'total estimated cost' not in text.lower() and
+                'travel cost' not in text.lower() and
+                'accommodation:' not in text.lower() and
+                'meals:' not in text.lower() and
+                'activities & experiences' not in text.lower() and
+                'final total cost' not in text.lower()
+          %}
+            <div class="activity-item">
+              <span class="activity-icon">
+                <i data-feather="compass"></i>
+              </span>
+              <span class="activity-description">{{ text }}</span>
+            </div>
             {% endif %}
+          {% endfor %}
+          </div>
+
+          <!-- Expense Summary Section -->
+          <div class="expense-summary reveal-animation">
+            <h2 class="expense-title">Trip Expense Breakdown</h2>
+            <div class="expense-grid">
+              <div class="expense-card">
+                <div class="expense-icon">
+                  <i data-feather="briefcase"></i>
+                </div>
+                <div class="expense-details">
+                  <h3>Total Travel Cost</h3>
+                  <p class="expense-amount">${{ '%.2f'|format(summary['travel']) }}</p>
+                </div>
+              </div>
+              <div class="expense-card">
+                <div class="expense-icon">
+                  <i data-feather="home"></i>
+                </div>
+                <div class="expense-details">
+                  <h3>Accommodation</h3>
+                  <p class="expense-amount">${{ '%.2f'|format(summary['accommodation']) }}</p>
+                </div>
+              </div>
+              <div class="expense-card">
+                <div class="expense-icon">
+                  <i data-feather="coffee"></i>
+                </div>
+                <div class="expense-details">
+                  <h3>Meals & Dining</h3>
+                  <p class="expense-amount">${{ '%.2f'|format(summary['meals']) }}</p>
+                </div>
+              </div>
+              <div class="expense-card">
+                <div class="expense-icon">
+                  <i data-feather="map"></i>
+                </div>
+                <div class="expense-details">
+                  <h3>Activities & Experiences</h3>
+                  <p class="expense-amount">${{ '%.2f'|format(summary['activities']) }}</p>
+                </div>
+              </div>
+              <div class="expense-card total-expense">
+                <div class="expense-icon">
+                  <i data-feather="dollar-sign"></i>
+                </div>
+                <div class="expense-details">
+                  <h3>Total Trip Expense</h3>
+                  <p class="expense-amount">${{ '%.2f'|format(summary['total']) }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+      {% else %}
+        <div class="no-plan-message">
+          <i data-feather="alert-circle"></i>
+          <p>No trip plan available. Please try again.</p>
         </div>
-        <a href="/" class="btn">Go Back</a>
-    </div>
+      {% endif %}
+
+      <div class="action-buttons">
+        <a href="/" class="btn btn-secondary">
+          <i data-feather="arrow-left"></i> Modify Trip
+        </a>
+        <a href="#" class="btn btn-primary" onclick="shareTrip()">
+          <i data-feather="share-2"></i> Share Trip
+        </a>
+      </div>
+    </main>
+
+    <footer class="premium-footer">
+      <div class="footer-content">
+        <p>&copy; 2024 Easeit Travel. All rights reserved.</p>
+        <div class="footer-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Contact Support</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <script>
+    feather.replace();
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const themeToggle = document.getElementById('theme-toggle');
+      const icon = themeToggle.querySelector('i');
+      icon.setAttribute('data-feather', document.body.classList.contains('dark-mode') ? 'sun' : 'moon');
+      feather.replace();
+    }
+
+    function shareTrip() {
+      if (navigator.share) {
+        navigator.share({
+          title: 'My Easeit Travel Plan',
+          text: 'Check out my personalized trip plan!',
+          url: window.location.href
+        }).catch(console.error);
+      } else {
+        alert('Sharing not supported on this device.');
+      }
+    }
+
+    
+        async function downloadPDF() {
+          const element = document.getElementById('full-trip-plan');
+          const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+            scrollY: -window.scrollY,
+            height: element.scrollHeight,
+            windowHeight: element.scrollHeight
+          });
+      
+          const imgData = canvas.toDataURL('image/png');
+          const pdf = new jspdf.jsPDF('p', 'pt', 'a4');
+      
+          const pdfWidth = pdf.internal.pageSize.getWidth();
+          const pdfHeight = pdf.internal.pageSize.getHeight();
+      
+          const imgProps = pdf.getImageProperties(imgData);
+          const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      
+          let heightLeft = imgHeight;
+          let position = 0;
+      
+          // Add first page
+          pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+          heightLeft -= pdfHeight;
+      
+          // Add remaining pages
+          while (heightLeft > 0) {
+            position -= pdfHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, imgHeight);
+            heightLeft -= pdfHeight;
+          }
+      
+          pdf.save('easeit-trip-plan.pdf');
+        }
+      
+      
+
+    function revealOnScroll() {
+      const reveals = document.querySelectorAll('.reveal-animation');
+      reveals.forEach((reveal) => {
+        const windowHeight = window.innerHeight;
+        const revealTop = reveal.getBoundingClientRect().top;
+        const revealPoint = 150;
+        if (revealTop < windowHeight - revealPoint) {
+          reveal.classList.add('active');
+        } else {
+          reveal.classList.remove('active');
+        }
+      });
+    }
+
+    document.getElementById('theme-toggle').addEventListener('click', toggleDarkMode);
+    window.addEventListener('scroll', revealOnScroll);
+    window.addEventListener('load', revealOnScroll);
+  </script>
 </body>
 </html>

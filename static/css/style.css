@@ -1,4 +1,7 @@
-/* Base styles */
+/* Global reset and base styles */
+* {
+    box-sizing: border-box;
+}
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
@@ -10,112 +13,370 @@ body {
     justify-content: center;
     min-height: 100vh;
 }
-
-/* Container styling */
+/* Form container */
 .container {
     max-width: 1200px;
-    padding: 40px 80px;
+    padding: 40px 60px;
     border-radius: 20px;
-    background: rgba(0, 0, 0, 0.3);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.25);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
     text-align: center;
+    animation: fadeIn 0.6s ease-out;
 }
-
-/* Heading styles */
+/* Heading and tagline */
 h1 {
-    font-size: 42px;
+    font-size: 3rem;
     font-weight: 700;
-    color: #fff;
-    margin-bottom: 15px;
+    margin-bottom: 0.5rem;
 }
-
 .tagline {
-    font-size: 18px;
+    font-size: 1.125rem;
+    font-weight: 400;
     color: #ddd;
-    margin-bottom: 30px;
+    margin-bottom: 2rem;
+    font-style: italic;
 }
-
 /* Form layout */
 form {
     display: flex;
     flex-direction: column;
+    align-items: stretch;
 }
-
-/* Form row layout */
 .form-row {
     display: flex;
-    gap: 2cm;
-    margin-bottom: 1.5cm;
     flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
 }
-
-/* Form group layout */
 .form-group {
-    flex: 1 1 calc(50% - 2cm);
+    flex: 1 1 240px;
     display: flex;
     flex-direction: column;
     text-align: left;
 }
-
-/* Input field styling */
+/* Inputs, selects, and textarea */
 input, select, textarea {
     width: 100%;
     max-width: 600px;
-    padding: 15px;
+    padding: 0.75rem;
+    margin-top: 0.3rem;
     border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: 8px;
-    font-size: 18px;
-    background: rgba(0, 0, 0, 0.3);
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.1);
     color: #fff;
     outline: none;
-    margin-top: 5px;
 }
-
-/* Placeholder styling */
 ::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.7);
 }
-
-/* Focus effect */
-input:focus, select:focus, textarea:focus {
-    border-color: #00f2fe;
-    box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
-}
-
-/* Select2 styling */
-.select2-container--default .select2-selection--single {
-    background: rgba(0, 0, 0, 0.3);
-    color: #fff;
+/* Select2 dropdown and selection styling */
+.select2-container .select2-selection--single {
+    height: 48px;
+    background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
 }
-
-/* Dropdown options styling */
-.select2-container--default .select2-results__option {
-    background: rgba(0, 0, 0, 0.9);
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 46px;
+}
+.select2-dropdown {
+    background: rgba(0, 0, 0, 0.95);
     color: #fff;
 }
-
-/* Highlighted option styling */
-.select2-container--default .select2-results__option--highlighted {
+.select2-results__option {
+    color: #fff;
+}
+.select2-results__option--highlighted {
     background: #0072ff;
     color: #fff;
 }
-
-/* Submit button styling */
+/* Label styling */
+label {
+    font-weight: 600;
+}
+/* Input focus state */
+input:focus, select:focus, textarea:focus,
+.select2-container--default .select2-selection--single:focus {
+    border-color: #00f2fe;
+    box-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
+}
+/* Submit button */
 button {
     width: 100%;
-    padding: 16px;
+    padding: 1rem;
     border: none;
     border-radius: 8px;
-    font-size: 20px;
+    font-size: 1.125rem;
     font-weight: 600;
     text-transform: uppercase;
     background: linear-gradient(to right, #00c6ff, #0072ff);
     color: #fff;
     cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
 }
-
 button:hover {
     background: linear-gradient(to right, #0072ff, #00c6ff);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0, 114, 255, 0.3);
+}
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+    .form-row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .form-group {
+        width: 100%;
+    }
+    h1 {
+        font-size: 2rem;
+    }
+}
+/* Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Uniform input field appearance */
+form input,
+form select,
+form textarea {
+  background-color: #0d1b2a;
+  color: #ffffff;
+  border: 1px solid #1e2a38;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 15px;
+  width: 100%;
+}
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+  outline: none;
+  border-color: #90caf9;
+  background-color: #0d1b2a;
+  color: #ffffff;
+}
+
+/* Consistent spacing between form groups */
+.form-group {
+  margin-bottom: 16px;
+}
+
+/* Reduce top/bottom space between form rows */
+.form-row {
+  margin-bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Fix Select2 dropdown text visibility */
+.select2-container--default .select2-results__option {
+  background-color: #0d1b2a;
+  color: #ffffff;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+  background-color: #1e88e5;
+  color: white;
+}
+
+.select2-container--default .select2-selection--single {
+  background-color: #0d1b2a;
+  border: 1px solid #1e2a38;
+  color: #ffffff;
+  height: 42px;
+  display: flex;
+  align-items: center;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  color: #ffffff;
+  line-height: 40px;
+  padding-left: 12px;
+}
+
+.select2-dropdown {
+  background-color: #0d1b2a;
+  border: 1px solid #1e2a38;
+}
+
+/* Fix white-on-white search box inside select2 dropdown */
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    background-color: #0d1b2a !important;
+    color: #ffffff !important;
+    border: 1px solid #1e2a38 !important;
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+
+  /* Select2 overall container styling */
+.select2-container--default .select2-selection--single {
+    background-color: #0d1b2a;
+    color: #ffffff;
+    border: 1px solid #1e2a38;
+    border-radius: 6px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #ffffff;
+    padding-left: 12px;
+    line-height: 40px;
+  }
+  
+  .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 42px;
+  }
+  
+  /* Dropdown list background & option styling */
+  .select2-dropdown {
+    background-color: #0d1b2a;
+    border: 1px solid #1e2a38;
+  }
+  
+  .select2-results__option {
+    background-color: #0d1b2a;
+    color: #ffffff;
+    font-size: 14px;
+  }
+  
+  .select2-results__option--highlighted[aria-selected] {
+    background-color: #1e88e5;
+    color: #ffffff;
+  }
+  
+  /* Fix search field inside all dropdowns */
+  .select2-container--default .select2-search--dropdown .select2-search__field {
+    background-color: #0d1b2a !important;
+    color: #ffffff !important;
+    border: 1px solid #1e2a38 !important;
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+  
+  /* Placeholder text inside dropdowns */
+  .select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #cccccc;
+  }
+  
+  /* Make calendar icons white inside date inputs */
+input[type="date"] {
+    color-scheme: dark; /* Allows native controls to adapt to dark background */
+  }
+  
+  /* For Chromium-based browsers */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+  }
+  
+  /* Expand the form container width slightly */
+form {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  
+  /* Reduce spacing between form elements */
+  .form-group,
+  .form-row {
+    margin-bottom: 12px;
+  }
+  
+  /* Reduce input padding */
+  form input,
+  form select,
+  form textarea {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+  
+  /* Grouping paired fields inline */
+  .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .form-row > div {
+    flex: 1 1 48%;
+  }
+  
+  /* Shrink bottom margin on heading/subtext */
+  form h1 {
+    margin-bottom: 12px;
+  }
+  
+  form p {
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+  
+  /* Widen the container */
+.container {
+    max-width: 1400px; /* increased from 1200px */
+    width: 100%;
+    padding: 30px 50px; /* slightly reduced padding */
+    margin: 20px auto;
+}
+
+/* Let form expand more horizontally */
+form {
+    max-width: 100%; /* allow full container width */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+/* Prevent form elements from being too tall */
+input, select, textarea {
+    max-width: 100%; /* no hard 600px limit */
+    padding: 10px;
+}
+
+/* Reduce vertical space between form rows */
+.form-row {
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+/* Shrink heading and tagline spacing */
+h1 {
+    margin-bottom: 0.25rem;
+    font-size: 2.5rem;
+}
+.tagline {
+    margin-bottom: 1.2rem;
+}
+
+#preferences {
+    min-height: 120px; /* or increase as you like, e.g. 150px */
+    resize: vertical; /* optional: allow user to resize if needed */
+}
+
+/* Center-align the submit button */
+form button {
+    width: fit-content;
+    margin: 30px auto 0 auto; /* Top margin for spacing, auto for centering */
+    display: block;
 }
