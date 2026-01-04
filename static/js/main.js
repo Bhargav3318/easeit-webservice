@@ -9,18 +9,29 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     let countryListData = [];
+    const API_KEY = "076087df8e29814435f33d7bed74c7e9f929d28a7baa8bff84a76efa8e570c9d"; // Replace with your CountryStateCity API key
 
     // Fetch country list once and cache it
-    fetch("https://restcountries.com/v3.1/all")
-        .then(response => response.json())
+    fetch("https://api.countrystatecity.in/v1/countries", {
+        headers: { "X-CSCAPI-KEY": API_KEY }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch country data");
+            }
+            return response.json();
+        })
         .then(data => {
             countryListData = data.map(country => ({
-                id: country.name.common,
-                text: country.name.common
+                id: country.iso2,
+                text: country.name
             }));
             initializeSelect2("#country", countryListData, "Select a country");
         })
-        .catch(err => console.error("Error fetching country data:", err));
+        .catch(err => {
+            console.error("Error fetching country data:", err);
+            alert("Failed to load country data. Please try again later.");
+        });
 
     document.getElementById("travel_type").addEventListener("change", function () {
         const travelType = this.value;
@@ -57,47 +68,54 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    function populateStates(countryName, stateSelectId, citySelectId) {
-        fetch("https://countriesnow.space/api/v0.1/countries/states")
-            .then(response => response.json())
-            .then(data => {
-                const countryData = data.data.find(
-                    c => c.name.trim().toLowerCase() === countryName.trim().toLowerCase()
-                );
-                if (countryData) {
-                    const stateList = countryData.states.map(s => ({
-                        id: s.name,
-                        text: s.name
-                    }));
-                    initializeSelect2(`#${stateSelectId}`, stateList, "Select a state");
-                    $(`#${stateSelectId}`).on("change", function () {
-                        const selectedState = $(this).val();
-                        populateCities(countryName, selectedState, citySelectId);
-                    });
-                } else {
-                    console.error("No states found for selected country:", countryName);
+    function populateStates(countryIso2, stateSelectId, citySelectId) {
+        fetch(`https://api.countrystatecity.in/v1/countries/${countryIso2}/states`, {
+            headers: { "X-CSCAPI-KEY": API_KEY }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch states");
                 }
+                return response.json();
             })
-            .catch(err => console.error("Error fetching states:", err));
+            .then(data => {
+                const stateList = data.map(state => ({
+                    id: state.iso2,
+                    text: state.name
+                }));
+                initializeSelect2(`#${stateSelectId}`, stateList, "Select a state");
+                $(`#${stateSelectId}`).on("change", function () {
+                    const selectedState = $(this).val();
+                    populateCities(countryIso2, selectedState, citySelectId);
+                });
+            })
+            .catch(err => {
+                console.error("Error fetching states:", err);
+                alert("Failed to load states. Please try again later.");
+            });
     }
 
-    function populateCities(countryName, stateName, citySelectId) {
-        fetch("https://countriesnow.space/api/v0.1/countries/state/cities", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ country: countryName, state: stateName })
+    function populateCities(countryIso2, stateIso2, citySelectId) {
+        fetch(`https://api.countrystatecity.in/v1/countries/${countryIso2}/states/${stateIso2}/cities`, {
+            headers: { "X-CSCAPI-KEY": API_KEY }
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch cities");
+                }
+                return response.json();
+            })
             .then(data => {
-                const cityList = (data.data || []).map(city => ({
-                    id: city,
-                    text: city
+                const cityList = data.map(city => ({
+                    id: city.name,
+                    text: city.name
                 }));
                 initializeSelect2(`#${citySelectId}`, cityList, "Select a city");
             })
-            .catch(err =>
-                console.error(`Error fetching cities for ${stateName}:`, err)
-            );
+            .catch(err => {
+                console.error(`Error fetching cities for ${stateIso2}:`, err);
+                alert("Failed to load cities. Please try again later.");
+            });
     }
 
     function initializeSelect2(selector, data, placeholder) {
